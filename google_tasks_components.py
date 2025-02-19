@@ -96,12 +96,11 @@ class TasklistInsert(Component):
     
     client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     body: InCompArg[dict]  # The request body for creating a task list
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[dict]  # The created task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service(ctx, self.client.value if self.client else None)
-        result = service.tasklists().insert(body=self.body.value, x__xgafv=self.x__xgafv.value).execute()
+        result = service.tasklists().insert(body=self.body.value).execute()
         self.tasklist.value = result
 
 
@@ -110,12 +109,11 @@ class TasklistGet(Component):
     """Returns the authenticated user's specified task list."""
     
     tasklist_id: InCompArg[str]  # Task list identifier
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[dict]  # The requested task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
-        result = service.tasklists().get(tasklist=self.tasklist_id.value, x__xgafv=self.x__xgafv.value).execute()
+        result = service.tasklists().get(tasklist=self.tasklist_id.value).execute()
         self.tasklist.value = result
 
 
@@ -124,11 +122,10 @@ class TasklistDelete(Component):
     """Deletes the authenticated user's specified task list."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    x__xgafv: InArg[Optional[str]]  # Optional error format
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
-        service.tasklists().delete(tasklist=self.tasklist_id.value, x__xgafv=self.x__xgafv.value).execute()
+        service.tasklists().delete(tasklist=self.tasklist_id.value).execute()
 
 
 @xai_component
