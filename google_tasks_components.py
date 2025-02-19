@@ -220,12 +220,22 @@ class TaskClear(Component):
 class TaskPatch(Component):
     """Updates the specified task with patch semantics."""
     
-    tasklist_id
-import os
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
-from xai_components.base import Component, InArg, OutArg
-from .auth_utils import get_credentials
+    tasklist_id: InArg[str]  # Task list identifier
+    task_id: InArg[str]  # Task identifier
+    body: InArg[Dict[str, Any]]  # The request body for patching a task
+    x__xgafv: InArg[Optional[str]]  # Optional error format
+    task: OutArg[Dict[str, Any]]  # The patched task
+
+    def execute(self, ctx) -> None:
+        service = get_google_tasks_service()
+        result = service.tasks().patch(
+            tasklist=self.tasklist_id.value,
+            task=self.task_id.value,
+            body=self.body.value,
+            x__xgafv=self.x__xgafv.value
+        ).execute()
+        self.task.value = result
+
 
 @xai_component
 class GoogleTasksAuth(Component):
