@@ -94,8 +94,8 @@ class GoogleTasksAuth(Component):
 class TasklistInsert(Component):
     """Creates a new task list and adds it to the authenticated user's task lists."""
     
-    client: InArg[Optional[any]]  # Optional Google Tasks client from GoogleTasksAuth
-    body: InArg[Dict[str, Any]]  # The request body for creating a task list
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
+    body: InCompArg[Dict[str, Any]]  # The request body for creating a task list
     x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[Dict[str, Any]]  # The created task list
 
@@ -109,7 +109,7 @@ class TasklistInsert(Component):
 class TasklistGet(Component):
     """Returns the authenticated user's specified task list."""
     
-    tasklist_id: InArg[str]  # Task list identifier
+    tasklist_id: InCompArg[str]  # Task list identifier
     x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[Dict[str, Any]]  # The requested task list
 
@@ -205,7 +205,7 @@ class TaskGet(Component):
     """Returns the specified task."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    task_id: InArg[str]  # Task identifier
+    task_id: InCompArg[str]  # Task identifier
     x__xgafv: InArg[Optional[str]]  # Optional error format
     task: OutArg[Dict[str, Any]]  # The requested task
 
