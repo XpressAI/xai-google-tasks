@@ -206,3 +206,36 @@ class TaskPatch(Component):
     """Updates the specified task with patch semantics."""
     
     tasklist_id
+import os
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from xai_components.base import Component, InArg, OutArg
+from .auth_utils import get_credentials
+
+@xai_component
+class GoogleTasksAuth(Component):
+    """A component to authenticate with Google Tasks API and generate a client object.
+    
+    If a client doesn't exist in the context, it will create one using credentials
+    from the GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable.
+
+    ##### outPorts:
+    - client: A Google Tasks API client object.
+    """
+
+    client: OutArg[any]
+
+    def execute(self, ctx) -> None:
+        # Check if client already exists in context
+        if 'gtasks' in ctx:
+            self.client.value = ctx['gtasks']
+            return
+
+        # Get credentials and create service
+        creds = get_credentials(['https://www.googleapis.com/auth/tasks'])
+        
+        # Create the service
+        service = build('tasks', 'v1', credentials=creds)
+
+        self.client.value = service
+        ctx.update({'gtasks': service})
