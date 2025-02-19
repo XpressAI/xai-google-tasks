@@ -1,5 +1,20 @@
 from xai_components.base import InArg, OutArg, Component, xai_component
 from typing import Optional, Dict, Any
+import os
+from googleapiclient.discovery import build
+from google.oauth2 import service_account
+from .auth_utils import get_credentials
+
+def get_google_tasks_service():
+    """Get Google Tasks service from context or create new one."""
+    ctx = {}  # TODO: Get actual context from component
+    if 'gtasks' in ctx:
+        return ctx['gtasks']
+    
+    creds = get_credentials(['https://www.googleapis.com/auth/tasks'])
+    service = build('tasks', 'v1', credentials=creds)
+    ctx['gtasks'] = service
+    return service
 
 # Tasklists Components
 @xai_component
