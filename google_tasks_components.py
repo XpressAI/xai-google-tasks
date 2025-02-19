@@ -1,4 +1,4 @@
-from xai_components.base import InArg, OutArg, Component, xai_component
+from xai_components.base import InArg, InCompArg, OutArg, Component, xai_component
 from typing import Optional, Dict, Any
 import os   
 import base64
