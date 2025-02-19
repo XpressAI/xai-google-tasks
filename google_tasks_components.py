@@ -242,12 +242,18 @@ class GoogleTasksAuth(Component):
     """A component to authenticate with Google Tasks API and generate a client object.
     
     If a client doesn't exist in the context, it will create one using credentials
-    from the GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable.
+    from either:
+    1. The provided JSON key file path
+    2. The GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable (base64 encoded)
+
+    ##### inPorts:
+    - json_path: Optional path to service account JSON key file
 
     ##### outPorts:
-    - client: A Google Tasks API client object.
+    - client: A Google Tasks API client object
     """
 
+    json_path: InArg[Optional[str]]  # Optional path to service account JSON file
     client: OutArg[any]
 
     def execute(self, ctx) -> None:
@@ -257,7 +263,7 @@ class GoogleTasksAuth(Component):
             return
 
         # Get credentials and create service
-        creds = get_credentials(['https://www.googleapis.com/auth/tasks'])
+        creds = get_credentials(['https://www.googleapis.com/auth/tasks'], self.json_path.value if self.json_path else None)
         
         # Create the service
         service = build('tasks', 'v1', credentials=creds)
