@@ -108,11 +108,12 @@ class TasklistInsert(Component):
 class TasklistGet(Component):
     """Returns the authenticated user's specified task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InCompArg[str]  # Task list identifier
     tasklist: OutArg[dict]  # The requested task list
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasklists().get(tasklist=self.tasklist_id.value).execute()
         self.tasklist.value = result
 
@@ -121,10 +122,11 @@ class TasklistGet(Component):
 class TasklistDelete(Component):
     """Deletes the authenticated user's specified task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         service.tasklists().delete(tasklist=self.tasklist_id.value).execute()
 
 
@@ -132,12 +134,13 @@ class TasklistDelete(Component):
 class TasklistList(Component):
     """Returns all the authenticated user's task lists."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     maxResults: InArg[int]  # Maximum number of task lists returned
     pageToken: InArg[str]  # Token specifying the result page to return
     tasklists: OutArg[dict]  # The list of task lists
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasklists().list(maxResults=self.maxResults.value, pageToken=self.pageToken.value).execute()
         self.tasklists.value = result
 
@@ -146,12 +149,13 @@ class TasklistList(Component):
 class TasklistUpdate(Component):
     """Updates the authenticated user's specified task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     body: InArg[dict]  # The request body for updating a task list
     tasklist: OutArg[dict]  # The updated task list
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasklists().update(tasklist=self.tasklist_id.value, body=self.body.value).execute()
         self.tasklist.value = result
 
@@ -160,12 +164,13 @@ class TasklistUpdate(Component):
 class TasklistPatch(Component):
     """Updates the authenticated user's specified task list with patch semantics."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     body: InArg[dict]  # The request body for patching a task list
     tasklist: OutArg[dict]  # The patched task list
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasklists().patch(tasklist=self.tasklist_id.value, body=self.body.value).execute()
         self.tasklist.value = result
 
@@ -175,6 +180,7 @@ class TasklistPatch(Component):
 class TaskInsert(Component):
     """Creates a new task on the specified task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     body: InArg[dict]  # The request body for creating a task
     parent: InArg[str]  # Optional parent task identifier
@@ -182,7 +188,7 @@ class TaskInsert(Component):
     task: OutArg[dict]  # The created task
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasks().insert(
             tasklist=self.tasklist_id.value,
             body=self.body.value,
@@ -196,12 +202,13 @@ class TaskInsert(Component):
 class TaskGet(Component):
     """Returns the specified task."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InCompArg[str]  # Task identifier
     task: OutArg[dict]  # The requested task
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasks().get(
             tasklist=self.tasklist_id.value,
             task=self.task_id.value
@@ -213,11 +220,12 @@ class TaskGet(Component):
 class TaskDelete(Component):
     """Deletes the specified task from the task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InArg[str]  # Task identifier
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         service.tasks().delete(
             tasklist=self.tasklist_id.value,
             task=self.task_id.value
@@ -228,6 +236,7 @@ class TaskDelete(Component):
 class TaskList(Component):
     """Returns all tasks in the specified task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     completedMax: InArg[str]  # Optional upper bound for completion date
     completedMin: InArg[str]  # Optional lower bound for completion date
@@ -243,7 +252,7 @@ class TaskList(Component):
     tasks: OutArg[dict]  # The list of tasks
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasks().list(
             tasklist=self.tasklist_id.value,
             completedMax=self.completedMax.value,
@@ -265,10 +274,11 @@ class TaskList(Component):
 class TaskClear(Component):
     """Clears all completed tasks from the specified task list."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         service.tasks().clear(
             tasklist=self.tasklist_id.value
         ).execute()
@@ -278,13 +288,14 @@ class TaskClear(Component):
 class TaskPatch(Component):
     """Updates the specified task with patch semantics."""
     
+    client: InArg[any]  # Google Tasks client from GoogleTasksAuth
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InArg[str]  # Task identifier
     body: InArg[dict]  # The request body for patching a task
     task: OutArg[dict]  # The patched task
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasks().patch(
             tasklist=self.tasklist_id.value,
             task=self.task_id.value,
