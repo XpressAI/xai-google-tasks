@@ -40,15 +40,18 @@ def get_credentials(scopes, json_path=None):
     )
 
 
-def get_google_tasks_service():
-    """Get Google Tasks service from context or create new one."""
-    ctx = {}  # TODO: Get actual context from component
-    if 'gtasks' in ctx:
+def get_google_tasks_service(ctx=None, client=None):
+    """Get Google Tasks service from provided client, context, or create new one."""
+    if client:
+        return client
+        
+    if ctx and 'gtasks' in ctx:
         return ctx['gtasks']
     
     creds = get_credentials(['https://www.googleapis.com/auth/tasks'])
     service = build('tasks', 'v1', credentials=creds)
-    ctx['gtasks'] = service
+    if ctx:
+        ctx['gtasks'] = service
     return service
 
 @xai_component
@@ -91,12 +94,13 @@ class GoogleTasksAuth(Component):
 class TasklistInsert(Component):
     """Creates a new task list and adds it to the authenticated user's task lists."""
     
+    client: InArg[Optional[any]]  # Optional Google Tasks client from GoogleTasksAuth
     body: InArg[Dict[str, Any]]  # The request body for creating a task list
     x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[Dict[str, Any]]  # The created task list
 
     def execute(self, ctx) -> None:
-        service = get_google_tasks_service()
+        service = get_google_tasks_service(ctx, self.client.value if self.client else None)
         result = service.tasklists().insert(body=self.body.value, x__xgafv=self.x__xgafv.value).execute()
         self.tasklist.value = result
 
