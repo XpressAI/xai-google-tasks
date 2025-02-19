@@ -1,5 +1,5 @@
 from xai_components.base import InArg, InCompArg, OutArg, Component, xai_component
-from typing import Optional, Dict, Any
+from typing import Optional, Any
 import os   
 import base64
 import json
@@ -95,9 +95,9 @@ class TasklistInsert(Component):
     """Creates a new task list and adds it to the authenticated user's task lists."""
     
     client: InArg[any]  # Google Tasks client from GoogleTasksAuth
-    body: InCompArg[Dict[str, Any]]  # The request body for creating a task list
+    body: InCompArg[dict]  # The request body for creating a task list
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    tasklist: OutArg[Dict[str, Any]]  # The created task list
+    tasklist: OutArg[dict]  # The created task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service(ctx, self.client.value if self.client else None)
