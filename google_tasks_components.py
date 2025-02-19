@@ -111,7 +111,7 @@ class TasklistGet(Component):
     
     tasklist_id: InCompArg[str]  # Task list identifier
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    tasklist: OutArg[Dict[str, Any]]  # The requested task list
+    tasklist: OutArg[dict]  # The requested task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -138,7 +138,7 @@ class TasklistList(Component):
     maxResults: InArg[Optional[int]]  # Maximum number of task lists returned
     pageToken: InArg[Optional[str]]  # Token specifying the result page to return
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    tasklists: OutArg[Dict[str, Any]]  # The list of task lists
+    tasklists: OutArg[dict]  # The list of task lists
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -151,9 +151,9 @@ class TasklistUpdate(Component):
     """Updates the authenticated user's specified task list."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    body: InArg[Dict[str, Any]]  # The request body for updating a task list
+    body: InArg[dict]  # The request body for updating a task list
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    tasklist: OutArg[Dict[str, Any]]  # The updated task list
+    tasklist: OutArg[dict]  # The updated task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -166,9 +166,9 @@ class TasklistPatch(Component):
     """Updates the authenticated user's specified task list with patch semantics."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    body: InArg[Dict[str, Any]]  # The request body for patching a task list
+    body: InArg[dict]  # The request body for patching a task list
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    tasklist: OutArg[Dict[str, Any]]  # The patched task list
+    tasklist: OutArg[dict]  # The patched task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -182,11 +182,11 @@ class TaskInsert(Component):
     """Creates a new task on the specified task list."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    body: InArg[Dict[str, Any]]  # The request body for creating a task
+    body: InArg[dict]  # The request body for creating a task
     parent: InArg[Optional[str]]  # Optional parent task identifier
     previous: InArg[Optional[str]]  # Optional previous sibling task identifier
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    task: OutArg[Dict[str, Any]]  # The created task
+    task: OutArg[dict]  # The created task
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -207,7 +207,7 @@ class TaskGet(Component):
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InCompArg[str]  # Task identifier
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    task: OutArg[Dict[str, Any]]  # The requested task
+    task: OutArg[dict]  # The requested task
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -253,7 +253,7 @@ class TaskList(Component):
     showHidden: InArg[Optional[bool]]  # Optional flag to show hidden tasks
     updatedMin: InArg[Optional[str]]  # Optional lower bound for last modification time
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    tasks: OutArg[Dict[str, Any]]  # The list of tasks
+    tasks: OutArg[dict]  # The list of tasks
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
@@ -296,9 +296,9 @@ class TaskPatch(Component):
     
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InArg[str]  # Task identifier
-    body: InArg[Dict[str, Any]]  # The request body for patching a task
+    body: InArg[dict]  # The request body for patching a task
     x__xgafv: InArg[Optional[str]]  # Optional error format
-    task: OutArg[Dict[str, Any]]  # The patched task
+    task: OutArg[dict]  # The patched task
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
