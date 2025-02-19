@@ -70,7 +70,7 @@ class GoogleTasksAuth(Component):
     - client: A Google Tasks API client object
     """
 
-    json_path: InArg[Optional[str]]  # Optional path to service account JSON file
+    json_path: InArg[str]  # Optional path to service account JSON file
     client: OutArg[any]
 
     def execute(self, ctx) -> None:
@@ -132,8 +132,8 @@ class TasklistDelete(Component):
 class TasklistList(Component):
     """Returns all the authenticated user's task lists."""
     
-    maxResults: InArg[Optional[int]]  # Maximum number of task lists returned
-    pageToken: InArg[Optional[str]]  # Token specifying the result page to return
+    maxResults: InArg[int]  # Maximum number of task lists returned
+    pageToken: InArg[str]  # Token specifying the result page to return
     tasklists: OutArg[dict]  # The list of task lists
 
     def execute(self, ctx) -> None:
@@ -177,8 +177,8 @@ class TaskInsert(Component):
     
     tasklist_id: InArg[str]  # Task list identifier
     body: InArg[dict]  # The request body for creating a task
-    parent: InArg[Optional[str]]  # Optional parent task identifier
-    previous: InArg[Optional[str]]  # Optional previous sibling task identifier
+    parent: InArg[str]  # Optional parent task identifier
+    previous: InArg[str]  # Optional previous sibling task identifier
     task: OutArg[dict]  # The created task
 
     def execute(self, ctx) -> None:
@@ -229,17 +229,17 @@ class TaskList(Component):
     """Returns all tasks in the specified task list."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    completedMax: InArg[Optional[str]]  # Optional upper bound for completion date
-    completedMin: InArg[Optional[str]]  # Optional lower bound for completion date
-    dueMax: InArg[Optional[str]]  # Optional upper bound for due date
-    dueMin: InArg[Optional[str]]  # Optional lower bound for due date
-    maxResults: InArg[Optional[int]]  # Optional maximum number of tasks returned
-    pageToken: InArg[Optional[str]]  # Optional token specifying the result page
-    showAssigned: InArg[Optional[bool]]  # Optional flag to show assigned tasks
-    showCompleted: InArg[Optional[bool]]  # Optional flag to show completed tasks
-    showDeleted: InArg[Optional[bool]]  # Optional flag to show deleted tasks
-    showHidden: InArg[Optional[bool]]  # Optional flag to show hidden tasks
-    updatedMin: InArg[Optional[str]]  # Optional lower bound for last modification time
+    completedMax: InArg[str]  # Optional upper bound for completion date
+    completedMin: InArg[str]  # Optional lower bound for completion date
+    dueMax: InArg[str]  # Optional upper bound for due date
+    dueMin: InArg[str]  # Optional lower bound for due date
+    maxResults: InArg[int]  # Optional maximum number of tasks returned
+    pageToken: InArg[str]  # Optional token specifying the result page
+    showAssigned: InArg[bool]  # Optional flag to show assigned tasks
+    showCompleted: InArg[bool]  # Optional flag to show completed tasks
+    showDeleted: InArg[bool]  # Optional flag to show deleted tasks
+    showHidden: InArg[bool]  # Optional flag to show hidden tasks
+    updatedMin: InArg[str]  # Optional lower bound for last modification time
     tasks: OutArg[dict]  # The list of tasks
 
     def execute(self, ctx) -> None:
