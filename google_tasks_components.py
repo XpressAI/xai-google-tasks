@@ -1,9 +1,44 @@
 from xai_components.base import InArg, OutArg, Component, xai_component
 from typing import Optional, Dict, Any
-import os
+import os   
+import base64
+import json
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
-from .auth_utils import get_credentials
+
+def get_credentials(scopes, json_path=None):
+    """Get credentials from file or environment variable.
+    
+    Args:
+        scopes: List of Google API scopes needed
+        json_path: Optional path to service account JSON file
+        
+    Returns:
+        Google OAuth credentials object
+    """
+    if json_path:
+        if not os.path.exists(json_path):
+            raise FileNotFoundError(f"Credentials file not found: {json_path}")
+        return service_account.Credentials.from_service_account_file(
+            json_path,
+            scopes=scopes
+        )
+    
+    # Fall back to environment variable
+    creds_b64 = os.getenv('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS')
+    if not creds_b64:
+        raise EnvironmentError("No credentials file provided and GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable not set")
+    
+    # Decode base64 credentials
+    creds_json = base64.b64decode(creds_b64).decode('utf-8')
+    creds_dict = json.loads(creds_json)
+    
+    # Create credentials object
+    return service_account.Credentials.from_service_account_info(
+        creds_dict,
+        scopes=scopes
+    )
+
 
 def get_google_tasks_service():
     """Get Google Tasks service from context or create new one."""
@@ -15,6 +50,41 @@ def get_google_tasks_service():
     service = build('tasks', 'v1', credentials=creds)
     ctx['gtasks'] = service
     return service
+
+@xai_component
+class GoogleTasksAuth(Component):
+    """A component to authenticate with Google Tasks API and generate a client object.
+    
+    If a client doesn't exist in the context, it will create one using credentials
+    from either:
+    1. The provided JSON key file path
+    2. The GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable (base64 encoded)
+
+    ##### inPorts:
+    - json_path: Optional path to service account JSON key file
+
+    ##### outPorts:
+    - client: A Google Tasks API client object
+    """
+
+    json_path: InArg[Optional[str]]  # Optional path to service account JSON file
+    client: OutArg[any]
+
+    def execute(self, ctx) -> None:
+        # Check if client already exists in context
+        if 'gtasks' in ctx:
+            self.client.value = ctx['gtasks']
+            return
+
+        # Get credentials and create service
+        creds = get_credentials(['https://www.googleapis.com/auth/tasks'], self.json_path.value if self.json_path else None)
+        
+        # Create the service
+        service = build('tasks', 'v1', credentials=creds)
+
+        self.client.value = service
+        ctx.update({'gtasks': service})
+
 
 # Tasklists Components
 @xai_component
@@ -237,36 +307,3 @@ class TaskPatch(Component):
         self.task.value = result
 
 
-@xai_component
-class GoogleTasksAuth(Component):
-    """A component to authenticate with Google Tasks API and generate a client object.
-    
-    If a client doesn't exist in the context, it will create one using credentials
-    from either:
-    1. The provided JSON key file path
-    2. The GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable (base64 encoded)
-
-    ##### inPorts:
-    - json_path: Optional path to service account JSON key file
-
-    ##### outPorts:
-    - client: A Google Tasks API client object
-    """
-
-    json_path: InArg[Optional[str]]  # Optional path to service account JSON file
-    client: OutArg[any]
-
-    def execute(self, ctx) -> None:
-        # Check if client already exists in context
-        if 'gtasks' in ctx:
-            self.client.value = ctx['gtasks']
-            return
-
-        # Get credentials and create service
-        creds = get_credentials(['https://www.googleapis.com/auth/tasks'], self.json_path.value if self.json_path else None)
-        
-        # Create the service
-        service = build('tasks', 'v1', credentials=creds)
-
-        self.client.value = service
-        ctx.update({'gtasks': service})
