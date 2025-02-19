@@ -134,12 +134,11 @@ class TasklistList(Component):
     
     maxResults: InArg[Optional[int]]  # Maximum number of task lists returned
     pageToken: InArg[Optional[str]]  # Token specifying the result page to return
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklists: OutArg[dict]  # The list of task lists
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
-        result = service.tasklists().list(maxResults=self.maxResults.value, pageToken=self.pageToken.value, x__xgafv=self.x__xgafv.value).execute()
+        result = service.tasklists().list(maxResults=self.maxResults.value, pageToken=self.pageToken.value).execute()
         self.tasklists.value = result
 
 
@@ -149,12 +148,11 @@ class TasklistUpdate(Component):
     
     tasklist_id: InArg[str]  # Task list identifier
     body: InArg[dict]  # The request body for updating a task list
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[dict]  # The updated task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
-        result = service.tasklists().update(tasklist=self.tasklist_id.value, body=self.body.value, x__xgafv=self.x__xgafv.value).execute()
+        result = service.tasklists().update(tasklist=self.tasklist_id.value, body=self.body.value).execute()
         self.tasklist.value = result
 
 
@@ -164,12 +162,11 @@ class TasklistPatch(Component):
     
     tasklist_id: InArg[str]  # Task list identifier
     body: InArg[dict]  # The request body for patching a task list
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     tasklist: OutArg[dict]  # The patched task list
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
-        result = service.tasklists().patch(tasklist=self.tasklist_id.value, body=self.body.value, x__xgafv=self.x__xgafv.value).execute()
+        result = service.tasklists().patch(tasklist=self.tasklist_id.value, body=self.body.value).execute()
         self.tasklist.value = result
 
 
@@ -182,7 +179,6 @@ class TaskInsert(Component):
     body: InArg[dict]  # The request body for creating a task
     parent: InArg[Optional[str]]  # Optional parent task identifier
     previous: InArg[Optional[str]]  # Optional previous sibling task identifier
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     task: OutArg[dict]  # The created task
 
     def execute(self, ctx) -> None:
@@ -191,8 +187,7 @@ class TaskInsert(Component):
             tasklist=self.tasklist_id.value,
             body=self.body.value,
             parent=self.parent.value,
-            previous=self.previous.value,
-            x__xgafv=self.x__xgafv.value
+            previous=self.previous.value
         ).execute()
         self.task.value = result
 
@@ -203,15 +198,13 @@ class TaskGet(Component):
     
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InCompArg[str]  # Task identifier
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     task: OutArg[dict]  # The requested task
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
         result = service.tasks().get(
             tasklist=self.tasklist_id.value,
-            task=self.task_id.value,
-            x__xgafv=self.x__xgafv.value
+            task=self.task_id.value
         ).execute()
         self.task.value = result
 
@@ -222,14 +215,12 @@ class TaskDelete(Component):
     
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InArg[str]  # Task identifier
-    x__xgafv: InArg[Optional[str]]  # Optional error format
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
         service.tasks().delete(
             tasklist=self.tasklist_id.value,
-            task=self.task_id.value,
-            x__xgafv=self.x__xgafv.value
+            task=self.task_id.value
         ).execute()
 
 
@@ -249,7 +240,6 @@ class TaskList(Component):
     showDeleted: InArg[Optional[bool]]  # Optional flag to show deleted tasks
     showHidden: InArg[Optional[bool]]  # Optional flag to show hidden tasks
     updatedMin: InArg[Optional[str]]  # Optional lower bound for last modification time
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     tasks: OutArg[dict]  # The list of tasks
 
     def execute(self, ctx) -> None:
@@ -266,8 +256,7 @@ class TaskList(Component):
             showCompleted=self.showCompleted.value,
             showDeleted=self.showDeleted.value,
             showHidden=self.showHidden.value,
-            updatedMin=self.updatedMin.value,
-            x__xgafv=self.x__xgafv.value
+            updatedMin=self.updatedMin.value
         ).execute()
         self.tasks.value = result
 
@@ -277,13 +266,11 @@ class TaskClear(Component):
     """Clears all completed tasks from the specified task list."""
     
     tasklist_id: InArg[str]  # Task list identifier
-    x__xgafv: InArg[Optional[str]]  # Optional error format
 
     def execute(self, ctx) -> None:
         service = get_google_tasks_service()
         service.tasks().clear(
-            tasklist=self.tasklist_id.value,
-            x__xgafv=self.x__xgafv.value
+            tasklist=self.tasklist_id.value
         ).execute()
 
 
@@ -294,7 +281,6 @@ class TaskPatch(Component):
     tasklist_id: InArg[str]  # Task list identifier
     task_id: InArg[str]  # Task identifier
     body: InArg[dict]  # The request body for patching a task
-    x__xgafv: InArg[Optional[str]]  # Optional error format
     task: OutArg[dict]  # The patched task
 
     def execute(self, ctx) -> None:
@@ -302,8 +288,7 @@ class TaskPatch(Component):
         result = service.tasks().patch(
             tasklist=self.tasklist_id.value,
             task=self.task_id.value,
-            body=self.body.value,
-            x__xgafv=self.x__xgafv.value
+            body=self.body.value
         ).execute()
         self.task.value = result
 
